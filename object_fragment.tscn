@@ -1,0 +1,8 @@
+[gd_scene load_steps=2 format=3 uid="uid://cp2sico41qpkn"]
+
+[ext_resource type="Texture2D" uid="uid://d2dy71e83xkgh" path="res://icon.svg" id="1_jsxav"]
+
+[node name="object_fragment" type="Sprite2D"]
+texture = ExtResource("1_jsxav")
+hframes = 5
+vframes = 5

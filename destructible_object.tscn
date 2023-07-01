@@ -1,0 +1,7 @@
+[gd_scene load_steps=2 format=3 uid="uid://cpp5a4r5bbmgt"]
+
+[ext_resource type="Script" path="res://destructible_object.gd" id="1_xqdij"]
+
+[node name="destructible_object" type="Node2D"]
+position = Vector2(557, 197)
+script = ExtResource("1_xqdij")
