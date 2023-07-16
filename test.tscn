@@ -1,4 +1,4 @@
-[gd_scene load_steps=3 format=3 uid="uid://b3buun6r2yw2p"]
+[gd_scene load_steps=3 format=3 uid="uid://bqrfqxvmeshhh"]
 
 [ext_resource type="PackedScene" uid="uid://cpp5a4r5bbmgt" path="res://destructible_object.tscn" id="1_egdch"]
 
@@ -9,31 +9,31 @@ size = Vector2(522, 55)
 
 [node name="destructible_object" parent="." instance=ExtResource("1_egdch")]
 position = Vector2(568, 273)
-force = 10000
-gravity = 4.0
-width_limit = 5.0
+scale = Vector2(0.5, 0.5)
+force = 120
+timeout = 3
+gravity = 7.0
+width_limit = 3.0
 height_limit = 2.0
 
 [node name="StaticBody2D" type="StaticBody2D" parent="."]
-position = Vector2(342, 462)
+position = Vector2(320, 545)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D"]
 position = Vector2(251, 17.5)
 shape = SubResource("RectangleShape2D_e5l7g")
 
 [node name="StaticBody2D3" type="StaticBody2D" parent="."]
-position = Vector2(347, 86)
+position = Vector2(302, 71)
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D3"]
 position = Vector2(251, 17.5)
 shape = SubResource("RectangleShape2D_e5l7g")
 
 [node name="StaticBody2D4" type="StaticBody2D" parent="."]
-position = Vector2(905, 69)
+position = Vector2(997, 78)
 rotation = 1.58299
 
 [node name="CollisionShape2D" type="CollisionShape2D" parent="StaticBody2D4"]
 position = Vector2(251, 17.5)
 shape = SubResource("RectangleShape2D_e5l7g")
-
-[node name="RigidBody2D" type="RigidBody2D" parent="."]

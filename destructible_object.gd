@@ -1,7 +1,7 @@
 extends Node2D
 
 @export var collide = false
-@export var force = 5000
+@export var force = 50
 @export var timeout = 5
 @export var gravity = 0.7
 @export var scale_modifier = 0.0
@@ -10,24 +10,26 @@ extends Node2D
 
 const FRAGMENT_PATH = "res://object_fragment.tscn"
 
-var exploded = false
-var fragments = []
-var frames = 0
-var timer = 0
+var obj_node: PackedScene
 var obj_height
 var obj_width
 var obj_animations_frames_h
 var obj_animations_frames_v
-			
+
+var exploded = false
+var fragments = []
+var frames = 0
+var timer = 0
+
 func _ready():
 	init()
 	set_to_default()
 				
 func _process(delta):
 	if exploded:
-		for fragment in fragments:
-			if scale_modifier != 0:
-				fragment.set_scale(Vector2(max(1, scale_modifier * timer), max(1, scale_modifier * timer)))
+		if scale_modifier != 0:
+			for fragment in fragments:
+				fragment.set_scale(Vector2(max(scale.x, scale_modifier * timer), max(scale.y, scale_modifier * timer)))
 
 		timer += delta
 		if timer > timeout:
@@ -42,8 +44,17 @@ func _input(event):
 		explode()
 	
 func init():
-	var objNode: PackedScene = load(FRAGMENT_PATH)
-	var obj_fragment_temp = objNode.instantiate() as Sprite2D;
+	init_variables()
+	for n in range(frames):
+		var rigid_body = create_rigid_body()
+		add_child(rigid_body)
+		rigid_body.add_child(create_sprite(n))
+		rigid_body.add_child(create_collision_shape())
+		fragments.append(rigid_body)
+		
+func init_variables():
+	obj_node = load(FRAGMENT_PATH)
+	var obj_fragment_temp = obj_node.instantiate() as Sprite2D;
 	obj_height = obj_fragment_temp.texture.get_size().y
 	obj_width = obj_fragment_temp.texture.get_size().x
 	obj_animations_frames_h = obj_fragment_temp.hframes
@@ -51,24 +62,24 @@ func init():
 	frames = obj_animations_frames_h * obj_animations_frames_v
 	obj_fragment_temp.queue_free()
 
-	for n in range(frames):
-		var rigid_body = RigidBody2D.new()
-		add_child(rigid_body)
-		rigid_body.freeze = true
-		rigid_body.gravity_scale = gravity
-		
-		var sprite = objNode.instantiate() as Sprite2D
-		rigid_body.add_child(sprite)
-		sprite.set_frame(n)
+func create_rigid_body():
+	var rigid_body = RigidBody2D.new()
+	rigid_body.freeze = true
+	rigid_body.gravity_scale = gravity
+	return rigid_body
 
-		var collision_shape = CollisionShape2D.new()
-		rigid_body.add_child(collision_shape)
-		collision_shape.shape = RectangleShape2D.new()
-		collision_shape.shape.size = Vector2(obj_width/obj_animations_frames_h, obj_height/obj_animations_frames_v)
-		if !collide:
-			collision_shape.disabled = true
+func create_sprite(frame):
+	var sprite = obj_node.instantiate() as Sprite2D
+	sprite.set_frame(frame)
+	return sprite
 		
-		fragments.append(rigid_body)
+func create_collision_shape():
+	var collision_shape = CollisionShape2D.new()
+	collision_shape.shape = RectangleShape2D.new()
+	collision_shape.shape.size = Vector2(obj_width/obj_animations_frames_h, obj_height/obj_animations_frames_v)
+	if !collide:
+		collision_shape.disabled = true
+	return collision_shape
 
 func set_to_default():
 	var frame = 0
@@ -81,20 +92,19 @@ func set_to_default():
 func explode():
 	for fragment in fragments:
 		fragment.freeze = false
-		var force_to_apply = Vector2(randf_range(-width_limit, width_limit), randf()*(-height_limit)-10) * force
-		
+		var force_to_apply = Vector2(randf_range(-width_limit, width_limit), randf()*(-height_limit)-10) * force * 100	
 		fragment.apply_force(force_to_apply)
-
-		#fragments.apply_torque_impulse(randf_range(-1, -5))
-		
-		fragment.set_inertia(1)
-		if force_to_apply.x < 0:
-			fragment.apply_torque_impulse(randf_range(-1, -5))
-		if force_to_apply.x > 0:
-			fragment.apply_torque_impulse(randf_range(1, 5))
-		fragment.set_inertia(0)
+		rotate_fragment(fragment, force_to_apply)
 
 	exploded = true
+
+func rotate_fragment(fragment, force_to_apply):
+	fragment.set_inertia(1)
+	if force_to_apply.x < 0:
+		fragment.apply_torque_impulse(randf_range(-1, -5))
+	if force_to_apply.x > 0:
+		fragment.apply_torque_impulse(randf_range(1, 5))
+	fragment.set_inertia(0)
 
 func clear():
 	for n in range(frames):
