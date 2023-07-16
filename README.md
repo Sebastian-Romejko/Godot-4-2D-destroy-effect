@@ -4,9 +4,10 @@ Basic script that takes sprite divided into frames and perform destroy effect/si
 
 ## Usage
 
-* create `Sprite2D` as new scene and split it into frames in `Animation` section
-* create `Node2D` and attach this script to it
+* create `Sprite2D` as new scene and split it into frames in `Animation` section (e.g. name: `fragment`)
+* create `Node2D` and attach this script to it (e.g. name: `destructible_object`)
 * change `FRAGMENT_PATH` inside script to target this `Sprite2D` scene created before
+* instantiate `destructible_object` scene, destroy effect is on `SPACE` by default
 
 ## Limitations
 
